@@ -1,10 +1,12 @@
 # A basic CLI tool to build Ubuntu images
 
-This is just a blog post to present a tool I made on my free time. It's a CLI project written in Python. It can build Ubuntu images from scratch.
+This is just a blog post to present one of my pet projects. It's a CLI project written in Python. It can build Ubuntu images from scratch.
 
-The tool is named `genesis` (because you start from nothing). And is available as a python package: https://github.com/gjolly/genesis (it's packaged as a deb in [a PPA](https://launchpad.net/~gjolly/+archive/ubuntu/genesis).
+The tool is named `genesis` (because you start from nothing). And is available as a python package: https://github.com/gjolly/genesis (it's also packaged as a deb in [a PPA](https://launchpad.net/~gjolly/+archive/ubuntu/genesis).
 
-## How does it work?
+## A basic example
+
+We are going to create a very minimal image of Ubuntu 23.04 (Lunar Lobster) and try to boot from it using `qemu`.
 
 ### Creating a base image
 
@@ -21,7 +23,7 @@ Then, with this filesystem, you can create a disk-image:
 
 ```bash
 sudo genesis create-disk \
-    --rootfs-dir ./chroot-lunar\
+    --rootfs-dir ./chroot-lunar \
     --disk-image lunar.img
 ```
 
