@@ -101,6 +101,52 @@ sudo genesis copy-files \
 
 Note that if `.ssh` does not exist under `/home/ubuntu`, it will be automatically created by `copy-files`.
 
+### Running the image
+
+Now let's try to run this image that we have just created. For that we need a bit of `qemu` black magic:
+
+```bash
+qemu-system-x86_64 \
+    -cpu host -machine type=q35,accel=kvm -m 2048 \
+    -nographic -snapshot \
+    -netdev id=net00,type=user,hostfwd=tcp::2222-:22 \
+    -device virtio-net-pci,netdev=net00 \
+    -drive if=virtio,format=raw,file=./lunar.img \
+    -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_CODE.fd,readonly=on \
+    -drive if=pflash,format=raw,file=/usr/share/OVMF/tmp/OVMF_VARS.fd,readonly=on
+```
+
+If you don't understand what is going on, this is not very important. But, assuming you have all the right dependencies installed, this should start a virtual machine and boot on the disk we've just created.
+
+Then you should be able to ssh (by opening another terminal):
+
+```bash
+ssh ubuntu@0.0.0.0 -p 2222
+```
+
+And we can check the boot time:
+
+```bash
+ubuntu@ubuntu:~$ sudo systemd-analyze critical-chain
+The time when unit became active or started is printed after the "@" character.
+The time the unit took to start is printed after the "+" character.
+
+graphical.target @740ms
+└─multi-user.target @739ms
+  └─systemd-logind.service @681ms +43ms
+    └─basic.target @663ms
+      └─sockets.target @663ms
+        └─ssh.socket @662ms
+          └─sysinit.target @636ms
+            └─systemd-resolved.service @548ms +86ms
+              └─systemd-tmpfiles-setup.service @536ms +9ms
+                └─local-fs.target @528ms
+                  └─boot-efi.mount @506ms +21ms
+                    └─dev-vda15.device @476ms
+```
+
+Because the image is so minimal, the system boots in less than a second.
+
 ## Is it usable for building production-ready images of Ubuntu?
 
 **No**
