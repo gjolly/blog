@@ -88,7 +88,7 @@ sudo genesis copy-files \
 
 ### User config
 
-Finally, I need 
+Finally, I need to configure a user. Here I create a user with `create-user` and I copy my public ssh key in `.ssh/authorized_keys` directory for this user.
 
 ```bash
 sudo genesis create-user \
@@ -96,8 +96,10 @@ sudo genesis create-user \
     --username ubuntu --sudo
 sudo genesis copy-files \
     --disk-image lunar.img \
-    --file /home/gauthier/.ssh/canonical.pub:/home/ubuntu/.ssh/authorized_keys --mod 600 --owner ubuntu
+    --file $HOME/.ssh/id_rsa.pub:/home/ubuntu/.ssh/authorized_keys --mod 600 --owner ubuntu
 ```
+
+Note that if `.ssh` does not exist under `/home/ubuntu`, it will be automatically created by `copy-files`.
 
 ## Is it usable for building production-ready images of Ubuntu?
 
